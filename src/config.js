@@ -4,6 +4,7 @@
 let apiUrl = ''
 let appUrl = ''
 let tencentMapsJsApiKey = 'IHQBZ-ABORU-5RSVR-BZMAU-64DY7-IOBOK'
+let tencentMapsSecretkey = 'iZnW8FtNTZ3sOp2GsG5NesziUdaNpI0h'
 
 switch (process.env.NODE_ENV) {
   case 'development':
@@ -18,6 +19,7 @@ switch (process.env.NODE_ENV) {
 
 export const FLY_CONFIG = {
   API_URL: apiUrl,
+  APP_URL: appUrl,
   TENCENT_MAPS_JS_API_KEY: tencentMapsJsApiKey,
-  APP_URL: appUrl
+  TENCENT_MAPS_SECRET_KEY: tencentMapsSecretkey
 }

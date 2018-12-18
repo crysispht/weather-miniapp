@@ -98,9 +98,11 @@ export default {
       if (res.authSetting['scope.userLocation'] === false) {
         this.showWxSetting = true
       }
-      return getLocation()
+      return getLocation({
+        type: 'wgs84' // 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
+      })
     }).then(res => {
-      console.log(res)
+      this.loadCity(res)
     }).catch(err => {
       console.log(err)
     })

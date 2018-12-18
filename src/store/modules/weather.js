@@ -31,10 +31,10 @@ export const weather = {
           commit('setWeatherLoadStatus', 3)
         })
     },
-    loadCity ({ commit }, key) {
+    loadCity ({ commit }, data) {
       commit('setCityLoadStatus', 1)
       cityApi
-        .getCity(key)
+        .getCityByGPS(data.latitude, data.longitude)
         .then(res => {
           console.log(res)
           commit('setCityLoadStatus', 2)
