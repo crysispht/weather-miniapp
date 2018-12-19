@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import { user } from './modules/user'
 import { counter } from './modules/counter'
 import { weather } from './modules/weather'
+import { city } from './modules/city'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
   modules: {
     user,
     counter,
-    weather
+    weather,
+    city
   },
   plugins: [
     createPersistedState({

@@ -1,8 +1,8 @@
 <template>
-  <div class="content" v-if="weather">
+  <div class="content">
     <!-- 显示当前天气 -->
     <div class="info">
-      <div class="city">{{ city ?city:'北京' }} {{ today }}</div>
+      <div class="city">{{ cityName }} {{ today }}</div>
       <div class="temp">{{ weather.wendu }}℃</div>
       <div class="weather">{{ weather.ganmao }}</div>
     </div>
@@ -54,7 +54,6 @@ import { formatTime } from '@/utils/index'
 import promisify from '../../utils/promisify.js'
 // import Dialog from '@static/vant-weapp/dist/dialog/dialog'
 const getSetting = promisify(wx.getSetting)
-const getLocation = promisify(wx.getLocation)
 
 export default {
   data () {
@@ -65,13 +64,18 @@ export default {
     }
   },
   computed: {
+    cityName () {
+      return this.getCity.district
+    },
     ...mapGetters('weather',
-      { weather: 'getWeather', getCity: 'getCity' }
-    )
+      { weather: 'getWeather' }
+    ),
+    ...mapGetters('city', [
+      'getCity'
+    ])
   },
   methods: {
     onClose (event) {
-      console.log(event)
       if (event.mp.detail === 'cancel') {
         // 异步关闭弹窗
         setTimeout(() => {
@@ -84,44 +88,39 @@ export default {
     closeAuth (event) {
       this.showWxSetting = false
       if (event.mp.detail.authSetting['scope.userLocation'] !== false) {
-        getLocation().then(res => {
-          console.log(res)
-        })
+        this.loadCity()
       }
     },
     ...mapActions('weather', [
-      'loadWeather', 'loadCity'
+      'loadWeather'
+    ]),
+    ...mapActions('city', [
+      'loadCity'
     ])
   },
   created () {
     getSetting().then(res => {
       if (res.authSetting['scope.userLocation'] === false) {
         this.showWxSetting = true
+      } else if (this.$_.isEmpty(this.getCity)) {
+        this.loadCity()
       }
-      return getLocation({
-        type: 'wgs84' // 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
-      })
-    }).then(res => {
-      this.loadCity(res)
     }).catch(err => {
       console.log(err)
     })
 
-    // wx.getLocation({
-    //   type: 'wgs84', // 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
-    //   success: res => {
-    //     console.log(res)
-    //   },
-    //   fail: (err) => {
-    //     console.log(err)
-    //   }
-    // })
-    this.loadWeather('北京')
+    if (this.$_.isEmpty(this.weather)) {
+      this.loadWeather(this.cityName)
+    }
+  },
+  onPullDownRefresh () {
+    this.loadCity()
+    this.loadWeather(this.cityName)
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .content {
   height: 100%;
   width: 100%;
@@ -191,6 +190,7 @@ export default {
 }
 
 .date {
+  line-height: 30px;
   margin-bottom: 20rpx;
   border-bottom: 1px solid #043567;
   color: #f29f39;

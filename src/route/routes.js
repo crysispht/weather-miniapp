@@ -6,7 +6,10 @@ module.exports = {
         navigationBarTitleText: '微天气',
         usingComponents: {
           'van-dialog': '/static/vant-weapp/dist/dialog/index'
-        }
+        },
+        enablePullDownRefresh: true,
+        // backgroundColor: '#f0145a',
+        backgroundTextStyle: 'dark'
       }
     },
     'pages/index/index',

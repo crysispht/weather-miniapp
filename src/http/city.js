@@ -1,16 +1,13 @@
 import Fly from 'flyio/dist/npm/wx'
-// import toPairs from 'lodash/toPairs'
 import { FLY_CONFIG } from '@/config'
 import qs from 'qs'
 import md5 from 'md5'
 import url from 'url'
 
-// import { FLY_CONFIG } from '@/config'
 const fly = new Fly()
-// const _ = new Lodash()
 
 fly.config.timeout = 20000
-// // 添加请求拦截器
+// 添加请求拦截器
 fly.interceptors.request.use(request => {
   // 给所有请求添加自定义header
   //   request.headers['X-Tag'] = 'flyio'
@@ -25,14 +22,12 @@ fly.interceptors.request.use(request => {
   request.body.key = FLY_CONFIG.TENCENT_MAPS_JS_API_KEY
   let params = request.body
   let ksort = qs.stringify(params, {
+    encode: false,
     addQueryPrefix: true,
     sort: (a, b) => {
       return a.localeCompare(b)
     }
   })
-  console.log(
-    url.parse(request.url).pathname + ksort + FLY_CONFIG.TENCENT_MAPS_SECRET_KEY
-  )
   let sig = md5(
     url.parse(request.url).pathname + ksort + FLY_CONFIG.TENCENT_MAPS_SECRET_KEY
   )

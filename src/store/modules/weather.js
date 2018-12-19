@@ -1,13 +1,10 @@
 import weatherApi from '@/http/weather.js'
-import cityApi from '@/http/city.js'
 // import { FLY_CONFIG } from '@/config'
 // console.log(FLY_CONFIG)
 export const weather = {
   namespaced: true,
 
   state: {
-    city: '',
-    cityLoadStatus: 0,
     weather: {},
     weatherLoadStatus: 0
   },
@@ -25,23 +22,11 @@ export const weather = {
           console.log(res, weather, dataStr)
           commit('setWeather', weather)
           commit('setWeatherLoadStatus', 2)
+          wx.stopPullDownRefresh()
         })
         .catch(err => {
           console.log(err)
           commit('setWeatherLoadStatus', 3)
-        })
-    },
-    loadCity ({ commit }, data) {
-      commit('setCityLoadStatus', 1)
-      cityApi
-        .getCityByGPS(data.latitude, data.longitude)
-        .then(res => {
-          console.log(res)
-          commit('setCityLoadStatus', 2)
-        })
-        .catch(err => {
-          console.log(err)
-          commit('setCityLoadStatus', 3)
         })
     }
   },
@@ -52,12 +37,6 @@ export const weather = {
     },
     setWeatherLoadStatus (state, status) {
       state.status = status
-    },
-    setCity (state, city) {
-      state.city = city
-    },
-    setCityLoadStatus (state, status) {
-      state.cityLoadStatus = status
     }
   },
 
@@ -67,12 +46,6 @@ export const weather = {
     },
     getWeatherLoadStatus (state) {
       return state.weatherLoadStatus
-    },
-    getCity (state) {
-      return state.city
-    },
-    getCityLoadStatus (state) {
-      return state.cityLoadStatus
     }
   }
 }
